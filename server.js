@@ -9,18 +9,28 @@ import tryonRoute from './routes/tryon.js';
 
 config();
 
+console.log('🔧 Loading environment configuration...');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const API_KEY = process.env.GEMINI_API_KEY;
 const API_PASSWORD = process.env.API_PASSWORD;
 
+console.log('🔑 Environment check:', {
+  PORT: PORT,
+  API_KEY: API_KEY ? '✅ Configured' : '❌ Missing',
+  API_PASSWORD: API_PASSWORD ? '✅ Configured' : '❌ Missing'
+});
+
+console.log('🤖 Initializing AI instance...');
 const ai = getAIInstance(API_KEY);
 
+console.log('🛡️ Setting up middleware...');
 app.use(helmet());
 app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
+console.log('🛣️ Setting up routes...');
 // Modular route for try-on
 app.use('/api', tryonRoute(ai, API_PASSWORD));
 
@@ -75,8 +85,11 @@ app.use('*', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Aazmaish API Server is running on port ${PORT}`);
+  console.log(`🌐 Server accessible from any device on network`);
+  console.log(`📱 Local access: http://localhost:${PORT}`);
+  console.log(`📱 Network access: http://[YOUR-IP]:${PORT}`);
   console.log(`🔐 API Password: ${API_PASSWORD}`);
   console.log(`🤖 Gemini AI: ${API_KEY ? 'Configured' : 'NOT CONFIGURED'}`);
 });

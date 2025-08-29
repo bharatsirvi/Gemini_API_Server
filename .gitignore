@@ -10,6 +10,10 @@ package-lock.json
 .env
 .env.*
 
+# Temporary files
+temp/
+*.tmp
+
 # macOS
 .DS_Store
 
