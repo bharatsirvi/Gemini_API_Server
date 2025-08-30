@@ -1,41 +1,55 @@
-import { GoogleGenAI, Modality } from '@google/genai';
+import {
+  GoogleGenAI,
+  Modality,
+  createUserContent,
+  createPartFromUri,
+} from "@google/genai";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const getAIInstance = (apiKey) => new GoogleGenAI({ apiKey });
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const generateVirtualTryon = async (ai, personImageFile, outfitImageFile, prompt) => {
-  console.log('🤖 Starting AI generation process...');
-  console.log('📊 Image details:', {
-    personImage: { 
+const getAIInstance = (apiKey) => new GoogleGenAI({ apiKey: (apiKey || "").trim() });
+
+const generateVirtualTryon = async (
+  ai,
+  personImageFile,
+  outfitImageFile,
+  prompt
+) => {
+  console.log("🤖 Starting AI generation process...");
+  console.log("📊 Image details:", {
+    personImage: {
       size: `${Math.round(personImageFile.size / 1024)}KB`,
       mimetype: personImageFile.mimetype,
-      file: personImageFile
+      file: personImageFile,
     },
-    outfitImage: { 
+    outfitImage: {
       size: `${Math.round(outfitImageFile.size / 1024)}KB`,
       mimetype: outfitImageFile.mimetype,
-      file: outfitImageFile
-    }
+      file: outfitImageFile,
+    },
   });
-  
+
   const parts = [
     {
       inlineData: {
-        data: personImageFile.buffer.toString('base64'),
-        mimeType: personImageFile.mimetype || 'image/jpeg',
+        data: personImageFile.buffer.toString("base64"),
+        mimeType: personImageFile.mimetype || "image/jpeg",
       },
     },
     {
       inlineData: {
-        data: outfitImageFile.buffer.toString('base64'),
-        mimeType: outfitImageFile.mimetype || 'image/jpeg',
+        data: outfitImageFile.buffer.toString("base64"),
+        mimeType: outfitImageFile.mimetype || "image/jpeg",
       },
     },
-    { text: prompt ,
-      negativePrompt: "blurry, distorted, low resolution, poorly drawn, deformed, bad anatomy, disfigured, mutated, extra limbs, cloned face, gross proportions, malformed limbs, missing arms, missing legs, fused fingers, too many fingers, long neck"
-    },
+    { text: prompt },
   ];
 
-  console.log('🚀 Sending request to Gemini AI...');
+  console.log("🚀 Sending request to Gemini AI...");
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash-image-preview",
     contents: { parts },
@@ -43,8 +57,8 @@ const generateVirtualTryon = async (ai, personImageFile, outfitImageFile, prompt
       responseModalities: [Modality.IMAGE, Modality.TEXT],
     },
   });
-  console.log('✅ AI request completed successfully');
+  console.log("✅ AI request completed successfully");
   return response;
 };
-
 export { getAIInstance, generateVirtualTryon };
+

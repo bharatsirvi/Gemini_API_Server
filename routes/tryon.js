@@ -14,11 +14,6 @@ export default (ai, API_PASSWORD) => {
     ]),
     validatePassword(API_PASSWORD),
     async (req, res) => {
-      console.log("🚀 Outfit try-on request received");
-      console.log("🔍 Debug - req.files:", req.files);
-      console.log("🔍 Debug - req.body:", req.body);
-      console.log("🔍 Debug - Content-Type:", req.headers["content-type"]);
-      console.log("🔍 Debug - All headers:", req.headers);
       try {
         const personImageFile = req.files?.personImage?.[0];
         const outfitImageFile = req.files?.outfitImage?.[0];
